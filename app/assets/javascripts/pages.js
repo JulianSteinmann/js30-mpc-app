@@ -1,87 +1,101 @@
 //= require jquery
 //= require jquery_ujs
 
-let oscs = [];
 let playing = false;
 const mpcKeys = document.querySelectorAll(".mpc-key");
 const keys = ['q','w','e','r','t','y']
+const drumPad = document.getElementById("drum-pad");
 // let baseFreq = 100;
 
 const tones = {
-  'C': 261.63,
-  'C#': 277.18,
+  'C': 262.63,
   'D':293.66,
-  'D#':311.13,
   'E': 329.63,
   'F': 349.23,
-  'F#': 369.99,
   'G': 392,
-  'G#': 415.3,
   'A': 440,
-  'A#': 466.16,
   'B': 493.88
 }
+let buttonCount = 0;
+class DrumPad {
+  constructor(key, pitch) {
+       this.key = key;
+       this.pitch = pitch;
+       this.oscillator = this.initOscillator();
+       this.addButton();
+       this.addClickTrigger();
+       this.addKeyboardTrigger();
+   }
 
-function initOscillator() {
-  let newOsc = new p5.Oscillator();
-  newOsc.setType('sine');
-  newOsc.freq(240);
-  newOsc.amp(0);
-  newOsc.start();
-  return newOsc
+   startBeep() { this.oscillator.amp(0.5, 0.15); }
+
+   stopBeep() { setTimeout(() => { this.oscillator.amp(0, 0.15); },    50); }
+
+   initOscillator() {
+     const newOsc = new p5.Oscillator();
+     newOsc.setType('sine');
+     newOsc.start();
+     newOsc.amp(0);
+     newOsc.freq(this.pitch);
+     return newOsc
+   }
+
+   addKeyboardTrigger() {
+     document.addEventListener("keydown", event => { if (event.key === this.key) {
+       this.startBeep();
+       this.addActiveClass();
+     } });
+     document.addEventListener("keyup", event => { if (event.key === this.key) {
+       this.stopBeep();
+       this.addRemoveClass();
+     } });
+   }
+
+   addClickTrigger() {
+     this.drumPadButton.addEventListener('mousedown', e => { this.startBeep(); this.addActiveClass(); });
+     this.drumPadButton.addEventListener('mouseup',   e => { this.stopBeep();  this.addRemoveClass(); });
+   }
+
+   addButton() {
+     drumPad.insertAdjacentHTML("beforeend", '<button class="mpc-key mpc-key-' + buttonCount + '">' + this.key + '</button>');
+     this.drumPadButton = document.querySelector(".mpc-key-" + buttonCount)
+     buttonCount++;
+   }
+
+   addActiveClass() {
+     this.drumPadButton.classList.add("active");
+   }
+   addRemoveClass() {
+     this.drumPadButton.classList.remove("active");
+   }
+
 }
 
-function setup() {
-  backgroundColor = color(255,0,255);
-  textAlign(CENTER);
-  createCanvas(710, 400);
-  for (let i=0; i < mpcKeys.length; i++) {
-    oscs.push(initOscillator())
-  }
-  // freqSlider = createSlider(0, 255, 100);
-
+// Create DrumPad Instanes
+for (let i=0; i < keys.length; i++) {
+  drumpads = new DrumPad(keys[i], tones[Object.keys(tones)[i]])
 }
 
-
-
-function draw() {
-  // baseFreq = freqSlider.value();
-}
-
-function startBeep(frec, i) {
-  oscs[i].freq(frec)
-  oscs[i].amp(0.5, 0.15);
-}
-function stopBeep(frec, i) {
-
-  setTimeout(() => { oscs[i].amp(0, 0.15); },    50);
-}
+// function setup() {
+//   // Slider
+//   // backgroundColor = color(255,0,255);
+//   // createCanvas(710, 400);
+//   // freqSlider = createSlider(1, 10, 1);
+// }
+//
+// function draw() {
+//   // baseFreq = freqSlider.value() * 130.82;
+// }
 
 
 
-for (const [i, key]  of mpcKeys.entries()) {
-  console.log(  tones[Object.keys(tones)[i]] );
-  const keyFreq = tones[Object.keys(tones)[i]] ;
-  const keyIndex = Number(key.dataset.keyIndex)
-  key.addEventListener('mousedown', e => {
-   startBeep(keyFreq, keyIndex );
-  });
-  key.addEventListener('mouseup', e => {
-   stopBeep(keyFreq, keyIndex );
-  });
 
-  addKeyboardTrigger(keys[i], keyFreq, keyIndex);
-}
-
-function addKeyboardTrigger(trigger, keyFreq, keyIndex){
-  document.addEventListener("keydown", event => {
-    if (event.key === trigger) {
-      startBeep(keyFreq, keyIndex );
-    }
-  });
-  document.addEventListener("keyup", event => {
-    if (event.key === trigger) {
-      stopBeep(keyFreq, keyIndex );
-    }
-  });
-}
+// REFACTOR PLANS
+// [x] OOP
+// [x] Generate html via js
+// [ ] Use full keyboard:
+//     arr [ [1234567890], [qwertyuiop[]], [asdfghjkl;], [zxcvbnm,.] ] => new DrumPad object
+// [ ] calculate music notes
+//     https://codepen.io/enxaneta/post/frequencies-of-musical-notes
+// [ ] Version with audio
+// [ ] Upload audio (cloudinary?)

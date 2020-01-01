@@ -2,9 +2,26 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-
+body {
+  background: #222;
+  color: #000;
+  font-weight: 200;
+  text-align: center;
+}
+h1 {
+  font-weight: 200;
+  letter-spacing: 2px;
+}
 .mpc-key {
+  background: #333;
+  font-size: 40px;
+  text-transform: uppercase;
   width: 200px;
   height: 200px;
+  margin: 10px;
   float: left;
+  border: none;
+  &.active {
+    background: #444;
+  }
 }
