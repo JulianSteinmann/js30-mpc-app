@@ -13,15 +13,19 @@ h1 {
   letter-spacing: 2px;
 }
 .mpc-key {
-  background: #333;
+  background: #2a2a2a;
   font-size: 40px;
   text-transform: uppercase;
-  width: 200px;
-  height: 200px;
+  width: 130px;
+  height: 130px;
   margin: 10px;
   float: left;
   border: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
   &.active {
     background: #444;
+    transform: scale(1.03);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+
   }
 }

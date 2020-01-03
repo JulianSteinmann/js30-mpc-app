@@ -3,19 +3,28 @@
 
 let playing = false;
 const mpcKeys = document.querySelectorAll(".mpc-key");
-const keys = ['q','w','e','r','t','y']
+const keys = ['q','w','e','r','t','y','u','i','o','p','[', ']']
 const drumPad = document.getElementById("drum-pad");
 // let baseFreq = 100;
 
 const tones = {
+  'C2': 130.82,
+  'D2': 146.83,
+  'E2': 164.81,
+  'F2': 174.61,
+  'G2': 196,
+  'A2': 220,
+  'B2': 246.94,
   'C': 262.63,
-  'D':293.66,
+  'D': 293.66,
   'E': 329.63,
   'F': 349.23,
   'G': 392,
   'A': 440,
   'B': 493.88
 }
+
+
 let buttonCount = 0;
 class DrumPad {
   constructor(key, pitch) {
